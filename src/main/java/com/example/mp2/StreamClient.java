@@ -35,7 +35,7 @@ public class StreamClient {
         }
 
         // Set default log4j logging level to WARN to hide Spark logs
-        StreamingExamples.setStreamingLogLevels();
+//        StreamingExamples.setStreamingLogLevels();
 
         // Populate the appropriate variables from the given args
         String kinesisAppName = args[0];
