@@ -4,6 +4,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.amazonaws.http.AmazonHttpClient;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Item;
+import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.model.CreateTableRequest;
+import com.amazonaws.services.s3.AmazonS3Client;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.function.Function;
 import org.apache.spark.examples.streaming.StreamingExamples;
@@ -100,6 +108,11 @@ public class StreamClient {
             }
         });
         /* Output Operation on the DStream Object */
+        AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(new DefaultAWSCredentialsProviderChain());
+        Item item = new Item().withPrimaryKey("Id", 120).withString("Payload", dStream.toString());
+        DynamoDB dynamoDB = new DynamoDB(dynamoDBClient);
+        Table table = dynamoDB.getTable("mp2-test");
+        table.putItem(item);
         dStream.print();
         jssc.start();
         jssc.awaitTermination();
