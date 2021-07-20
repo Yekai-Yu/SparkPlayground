@@ -196,7 +196,7 @@ def foreach_batch_function(df, epoch_id):
     #             (col("XY.Dest") == col("XYGroupBy.Dest")), 
     #             (col("XY.FlightDateUniform") == col("XYGroupBy.FlightDateUniform")), 
     #             (col("XY.ArrDelay") == col("XYGroupBy.min(ArrDelay)"))]
-    X_Y_cond = ["Origin", "Dest", "FlightDateUniform", "ArrDelay"]
+    X_Y_cond = ["Origin", "Dest", "FlightDateUniform", col("XY.ArrDelay") == col("XYGroupBy.min(ArrDelay)")]
     df_X_Y = df_X_Y.join(df_X_Y_groupby, X_Y_cond, "inner")
     df_X_Y = df_X_Y.drop("min(ArrDelay)")
     df_X_Y = df_X_Y.alias("XY")
@@ -214,7 +214,7 @@ def foreach_batch_function(df, epoch_id):
     #             (col("YZ.Dest") == col("YZGroupBy.Dest")), 
     #             (col("YZ.FlightDateUniform") == col("YZGroupBy.FlightDateUniform")), 
     #             (col("YZ.ArrDelay") == col("YZGroupBy.min(ArrDelay)"))]
-    Y_Z_cond = ["Origin", "Dest", "FlightDateUniform", "ArrDelay"]
+    Y_Z_cond = ["Origin", "Dest", "FlightDateUniform", col("YZ.ArrDelay") == col("YZGroupBy.min(ArrDelay)")]
     df_Y_Z = df_Y_Z.join(df_Y_Z_groupby, Y_Z_cond, "inner")
     df_Y_Z = df_Y_Z.drop("min(ArrDelay)")
     df_Y_Z = df_Y_Z.alias("YZ")
