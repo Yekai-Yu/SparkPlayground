@@ -57,7 +57,7 @@ q1dot2df = df.select(col("DayOfWeek"), col("ArrDelay")) \
              .groupBy(col("DayOfWeek")) \
              .agg({"ArrDelay": "avg"}) \
              .orderBy("AVG(ArrDelay)")
-'''
+
 # =============== Q1.3 ===============
 q1dot3df = df.select(col("UniqueCarrier"), col("ArrDelay")) \
              .groupBy(col("UniqueCarrier")) \
@@ -163,7 +163,7 @@ q2dot3df_4 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
                 .limit(11)
-
+'''
 # =============== Q3.2 ===============
 df_2008 = df
 df_2008 = df_2008.withColumn("FlightDateUniform", 
@@ -256,14 +256,14 @@ def execute(df_, t):
 interval = 5
 
 #execute(q1dot2df, interval)
-execute(q1dot3df, interval)
+# execute(q1dot3df, interval)
 
-execute(q2dot1df_SRQ, interval)
-execute(q2dot1df_CMH, interval)
-execute(q2dot1df_JFK, interval)
-execute(q2dot1df_SEA, interval)
-execute(q2dot1df_BOS, interval)
-'''
+# execute(q2dot1df_SRQ, interval)
+# execute(q2dot1df_CMH, interval)
+# execute(q2dot1df_JFK, interval)
+# execute(q2dot1df_SEA, interval)
+# execute(q2dot1df_BOS, interval)
+
 execute(q2dot2df_SRQ, interval)
 execute(q2dot2df_CMH, interval)
 execute(q2dot2df_JFK, interval)
@@ -274,7 +274,7 @@ execute(q2dot3df_1, interval)
 execute(q2dot3df_2, interval)
 execute(q2dot3df_3, interval)
 execute(q2dot3df_4, interval)
-
+'''
 execute(q3dot2_df1, interval)
 execute(q3dot2_df2, interval)
 execute(q3dot2_df3, interval)
