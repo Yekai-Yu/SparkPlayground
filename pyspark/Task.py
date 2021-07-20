@@ -175,10 +175,8 @@ def foreach_batch_function(df, epoch_id):
     # =============== Q3.2 ===============
     df_2008 = df
     df_2008 = df_2008.withColumn("FlightDateUniform", 
-                                to_date(concat(lpad(col("Month"),2,'0'), 
-                                            lpad(col("DayofMonth"),2,'0'), 
-                                            col("Year")), 
-                                        "MMddyyyy"))
+                                to_date(col("FlightDate"), 
+                                        "yyyy-MM-dd"))
     df_2008 = df_2008.filter(df_2008["FlightDateUniform"].between("2008-01-01","2008-12-31"))
     df_2008 = df_2008.withColumn("CRSDepTimeUniform", 
                                 to_timestamp(concat(col("FlightDateUniform"), 
