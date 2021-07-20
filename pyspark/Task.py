@@ -44,7 +44,7 @@ df = spark \
   .readStream \
   .format("kafka") \
   .option("kafka.bootstrap.servers", "b-1.mp2.zetw14.c11.kafka.us-east-1.amazonaws.com:9092,b-2.mp2.zetw14.c11.kafka.us-east-1.amazonaws.com:9092") \
-  .option("subscribe", "SmallTopic") \
+  .option("subscribe", "AWSKafkaTutorialTopic") \
   .option("startingOffsets", "earliest") \
   .load()
 
@@ -167,6 +167,14 @@ q2dot3df_4 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
 def get_dynamodb():
   return boto3.resource('dynamodb', region_name = "us-east-1")
 
+def write_to_table(df, table_name):
+    for entry in df.rdd.collect():
+        print(entry)
+        get_dynamodb().Table(table_name).put_item(
+        Item = { 'origin-tran-dest': entry['Origin 1'] + "-" + entry['Destination 1'] + "-" + entry["Destination 2"] + "-" + entry["Sched Depart 1"] + "-" + entry["Sched Depart 2"], 
+                 'totalArrDelay': entry['Arrival Delay 1'] + "," + entry['Arrival Delay 2'] })
+    
+
 def foreach_batch_function(df, epoch_id):
     q3_2_table_name = "q3.2"
     df = df.selectExpr("CAST(value AS STRING)") \
@@ -251,25 +259,29 @@ def foreach_batch_function(df, epoch_id):
                                                 .alias("Sched Depart 2"), 
                                     col("YZ.ArrDelay").alias("Arrival Delay 2"))
 
-    q3dot2_df1 = df_X_Y_Z_select.where((col("XY.Origin") == "STL") & (col("XY.Dest") == "MSY") & (col("YZ.Dest") == "STL") & col("Sched Depart 1").like("%03/09/2008%"))
+    q3dot2_df1 = df_X_Y_Z_select.where((col("XY.Origin") == "BOS") & (col("XY.Dest") == "ATL") & (col("YZ.Dest") == "LAX") & col("Sched Depart 1").like("%03/04/2008%"))
     q3dot2_df1.show()
     print("Compelete query, writing to dynamo")
-    for entry in q3dot2_df1.rdd.collect():
-        print(entry)
-        get_dynamodb().Table(q3_2_table_name).put_item(
-        Item = { 'origin-tran-dest': entry['Origin 1'] + "-" + entry['Destination 1'] + "-" + entry["Destination 2"] + "-" + entry["Sched Depart 1"] + "-" + entry["Sched Depart 2"], 
-                 'totalArrDelay': entry['Arrival Delay 1'] + "," + entry['Arrival Delay 2'] })
+    write_to_table(q3dot2_df1, q3_2_table_name)
     
-    # get_dynamodb().Table(q3_2_table_name).put_item(
-    #     Item = { 'origin-tran-dest': q3dot2_df1_rdd['Origin 1'] + "-" + q3dot2_df1['Destination 1'] + "-" + q3dot2_df1["Destination 2"] + "-" + q3dot2_df1["Sched Depart 1"] + "-" + q3dot2_df1["Sched Depart 2"], 
-    #              'totalArrDelay': q3dot2_df1['Arrival Delay 1'] + "," + q3dot2_df1['Arrival Delay 2'] })
-'''    
-    # q3dot2_df2 = df_X_Y_Z_select.where((col("XY.Origin") == "PHX") & (col("XY.Dest") == "JFK") & (col("YZ.Dest") == "MSP") & col("Sched Depart 1").like("%07/09/2008%"))
-    # q3dot2_df3 = df_X_Y_Z_select.where((col("XY.Origin") == "DFW") & (col("XY.Dest") == "STL") & (col("YZ.Dest") == "ORD") & col("Sched Depart 1").like("%24/01/2008%"))
-    # q3dot2_df4 = df_X_Y_Z_select.where((col("XY.Origin") == "LAX") & (col("XY.Dest") == "MIA") & (col("YZ.Dest") == "LAX") & col("Sched Depart 1").like("%16/05/2008%"))
+    q3dot2_df2 = df_X_Y_Z_select.where((col("XY.Origin") == "PHX") & (col("XY.Dest") == "JFK") & (col("YZ.Dest") == "MSP") & col("Sched Depart 1").like("%07/09/2008%"))
+    q3dot2_df2.show()
+    print("Compelete query, writing to dynamo")
+    write_to_table(q3dot2_df2, q3_2_table_name)
+    
+    q3dot2_df3 = df_X_Y_Z_select.where((col("XY.Origin") == "DFW") & (col("XY.Dest") == "STL") & (col("YZ.Dest") == "ORD") & col("Sched Depart 1").like("%24/01/2008%"))
+    q3dot2_df3.show()
+    print("Compelete query, writing to dynamo")
+    write_to_table(q3dot2_df3, q3_2_table_name)
 
+    q3dot2_df4 = df_X_Y_Z_select.where((col("XY.Origin") == "LAX") & (col("XY.Dest") == "MIA") & (col("YZ.Dest") == "LAX") & col("Sched Depart 1").like("%16/05/2008%"))
+    q3dot2_df4.show()
+    print("Compelete query, writing to dynamo")
+    write_to_table(q3dot2_df4, q3_2_table_name)
 
+    
 
+''' 
 
 q2_1_table_name = "q2.1.0"
 q2_2_table_name = "q2.2.0"
