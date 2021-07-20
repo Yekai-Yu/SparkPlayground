@@ -4,7 +4,7 @@ from pyspark.sql.functions import *
 from pyspark.sql.window import Window
 from decimal import *
 
-# import boto3
+import boto3
 import json
 import time
 
@@ -65,42 +65,42 @@ q1dot3df = df.select(col("UniqueCarrier"), col("ArrDelay")) \
              .orderBy("AVG(ArrDelay)") \
              .limit(11)
 
-
+'''
 # =============== Q2.1 ===============
 q2dot1df_SRQ = df.select("Origin", "UniqueCarrier", "DepDelay") \
                 .where(col("Origin") == "SRQ") \
                 .groupBy(col("Origin"), col("UniqueCarrier")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(11)
+                .limit(10)
 
 q2dot1df_CMH = df.select("Origin", "UniqueCarrier", "DepDelay") \
                 .where(col("Origin") == "CMH") \
                 .groupBy(col("Origin"), col("UniqueCarrier")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(11)
+                .limit(10)
 
 q2dot1df_JFK = df.select("Origin", "UniqueCarrier", "DepDelay") \
                 .where(col("Origin") == "JFK") \
                 .groupBy(col("Origin"), col("UniqueCarrier")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(11)
+                .limit(10)
 
 q2dot1df_SEA = df.select("Origin", "UniqueCarrier", "DepDelay") \
                 .where(col("Origin") == "SEA") \
                 .groupBy(col("Origin"), col("UniqueCarrier")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(11)
+                .limit(10)
 
 q2dot1df_BOS = df.select("Origin", "UniqueCarrier", "DepDelay") \
                 .where(col("Origin") == "BOS") \
                 .groupBy(col("Origin"), col("UniqueCarrier")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(11)
+                .limit(10)
 
 
 # =============== Q2.2 ===============
@@ -109,64 +109,64 @@ q2dot2df_SRQ = df.select("Origin", "Dest", "DepDelay") \
                 .groupBy(col("Origin"), col("Dest")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(11)
+                .limit(10)
 
 q2dot2df_CMH = df.select("Origin", "Dest", "DepDelay") \
                 .where(col("Origin") == "CMH") \
                 .groupBy(col("Origin"), col("Dest")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(11)
+                .limit(10)
 
 q2dot2df_JFK = df.select("Origin", "Dest", "DepDelay") \
                 .where(col("Origin") == "JFK") \
                 .groupBy(col("Origin"), col("Dest")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(11)
+                .limit(10)
 
 q2dot2df_SEA = df.select("Origin", "Dest", "DepDelay") \
                 .where(col("Origin") == "SEA") \
                 .groupBy(col("Origin"), col("Dest")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(11)
+                .limit(10)
 
 q2dot2df_BOS = df.select("Origin", "Dest", "DepDelay") \
                 .where(col("Origin") == "BOS") \
                 .groupBy(col("Origin"), col("Dest")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(11)
-'''
+                .limit(10)
+
 # =============== Q2.3 ===============
 q2dot3df_1 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where((col("Origin") == "LGA") & (col("Dest") == "BOS")) \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
                 .orderBy(col("AVG(ArrDelay)").asc()) \
-                .limit(11)
+                .limit(10)
 
 q2dot3df_2 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where((col("Origin") == "BOS") & (col("Dest") == "LGA")) \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
                 .orderBy(col("AVG(ArrDelay)").asc()) \
-                .limit(11)
+                .limit(10)
 
 q2dot3df_3 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where((col("Origin") == "OKC") & (col("Dest") == "DFW")) \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
                 .orderBy(col("AVG(ArrDelay)").asc()) \
-                .limit(11)
+                .limit(10)
 
 q2dot3df_4 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where((col("Origin") == "MSP") & (col("Dest") == "ATL")) \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
                 .orderBy(col("AVG(ArrDelay)").asc()) \
-                .limit(11)
+                .limit(10)
 '''
 # =============== Q3.2 ===============
 df_2008 = df
@@ -245,9 +245,122 @@ q3dot2_df4 = df_X_Y_Z_select.where(col("XY.Origin") == "LAX" & col("XY.Dest") ==
 
 '''
 
+q2_1_table_name = "q2.1"
+q2_2_table_name = "q2.2"
+q2_3_table_name = "q2.3"
+
+def get_dynamodb():
+  return boto3.resource('dynamodb')
+
+class Q2_1_SendToDynamoDB_ForeachWriter:
+  '''
+  Class to send a set of rows to DynamoDB.
+  When used with `foreach`, copies of this class is going to be used to write
+  multiple rows in the executor. See the python docs for `DataStreamWriter.foreach`
+  for more details.
+  '''
+
+  def open(self, partition_id, epoch_id):
+    # This is called first when preparing to send multiple rows.
+    # Put all the initialization code inside open() so that a fresh
+    # copy of this class is initialized in the executor where open()
+    # will be called.
+    self.dynamodb = get_dynamodb()
+    return True
+
+  def process(self, row):
+    # This is called for each row after open() has been called.
+    # This implementation sends one row at a time.
+    # For further enhancements, contact the Spark+DynamoDB connector
+    # team: https://github.com/audienceproject/spark-dynamodb
+    self.dynamodb.Table(q2_1_table_name).put_item(
+        Item = { 'origin': str(row['Origin']), 
+                 'carrier': str(row['UniqueCarrier']),
+                 'avgDelay': str(row['AVG(DepDelay)']) })
+
+  def close(self, err):
+    # This is called after all the rows have been processed.
+    if err:
+      raise err
+
+class Q2_2_SendToDynamoDB_ForeachWriter:
+  '''
+  Class to send a set of rows to DynamoDB.
+  When used with `foreach`, copies of this class is going to be used to write
+  multiple rows in the executor. See the python docs for `DataStreamWriter.foreach`
+  for more details.
+  '''
+
+  def open(self, partition_id, epoch_id):
+    # This is called first when preparing to send multiple rows.
+    # Put all the initialization code inside open() so that a fresh
+    # copy of this class is initialized in the executor where open()
+    # will be called.
+    self.dynamodb = get_dynamodb()
+    return True
+
+  def process(self, row):
+    # This is called for each row after open() has been called.
+    # This implementation sends one row at a time.
+    # For further enhancements, contact the Spark+DynamoDB connector
+    # team: https://github.com/audienceproject/spark-dynamodb
+    self.dynamodb.Table(q2_2_table_name).put_item(
+        Item = { 'origin': str(row['Origin']), 
+                 'dest': str(row['Dest']),
+                 'avgDelay': str(row['AVG(DepDelay)']) })
+
+  def close(self, err):
+    # This is called after all the rows have been processed.
+    if err:
+      raise err
+
+class Q2_3_SendToDynamoDB_ForeachWriter:
+  '''
+  Class to send a set of rows to DynamoDB.
+  When used with `foreach`, copies of this class is going to be used to write
+  multiple rows in the executor. See the python docs for `DataStreamWriter.foreach`
+  for more details.
+  '''
+
+  def open(self, partition_id, epoch_id):
+    # This is called first when preparing to send multiple rows.
+    # Put all the initialization code inside open() so that a fresh
+    # copy of this class is initialized in the executor where open()
+    # will be called.
+    self.dynamodb = get_dynamodb()
+    return True
+
+  def process(self, row):
+    # This is called for each row after open() has been called.
+    # This implementation sends one row at a time.
+    # For further enhancements, contact the Spark+DynamoDB connector
+    # team: https://github.com/audienceproject/spark-dynamodb
+    self.dynamodb.Table(q2_3_table_name).put_item(
+        Item = { 'origin': str(row['Origin']), 
+                 'dest': str(row['UniqueCarrier']),
+                 'carrier': str(row['UniqueCarrier']),
+                 'avgDelay': str(row['AVG(ArrDelay)']) })
+
+  def close(self, err):
+    # This is called after all the rows have been processed.
+    if err:
+      raise err
+
+
 def execute(df_, t):
     q = (
         df_.writeStream\
+            .outputMode("complete") \
+            .option("truncate", "false")\
+            .format("console") \
+            .start()
+    )
+    stop_stream_query(q, t)
+
+def execute_q2(df_, t, writer):
+    q = (
+        df_.writeStream\
+            .foreach(writer) \
             .outputMode("complete") \
             .option("truncate", "false")\
             .format("console") \
@@ -262,22 +375,22 @@ interval = 5
 #execute(q1dot2df, interval)
 # execute(q1dot3df, interval)
 
-# execute(q2dot1df_SRQ, interval)
-# execute(q2dot1df_CMH, interval)
-# execute(q2dot1df_JFK, interval)
-# execute(q2dot1df_SEA, interval)
-# execute(q2dot1df_BOS, interval)
+execute_q2(q2dot1df_SRQ, interval, Q2_1_SendToDynamoDB_ForeachWriter)
+execute_q2(q2dot1df_CMH, interval, Q2_1_SendToDynamoDB_ForeachWriter)
+execute_q2(q2dot1df_JFK, interval, Q2_1_SendToDynamoDB_ForeachWriter)
+execute_q2(q2dot1df_SEA, interval, Q2_1_SendToDynamoDB_ForeachWriter)
+execute_q2(q2dot1df_BOS, interval, Q2_1_SendToDynamoDB_ForeachWriter)
 
-# execute(q2dot2df_SRQ, interval)
-# execute(q2dot2df_CMH, interval)
-# execute(q2dot2df_JFK, interval)
-# execute(q2dot2df_SEA, interval)
-# execute(q2dot2df_BOS, interval)
+execute_q2(q2dot2df_SRQ, interval, Q2_2_SendToDynamoDB_ForeachWriter)
+execute_q2(q2dot2df_CMH, interval, Q2_2_SendToDynamoDB_ForeachWriter)
+execute_q2(q2dot2df_JFK, interval, Q2_2_SendToDynamoDB_ForeachWriter)
+execute_q2(q2dot2df_SEA, interval, Q2_2_SendToDynamoDB_ForeachWriter)
+execute_q2(q2dot2df_BOS, interval, Q2_2_SendToDynamoDB_ForeachWriter)
 
-execute(q2dot3df_1, interval)
-execute(q2dot3df_2, interval)
-execute(q2dot3df_3, interval)
-execute(q2dot3df_4, interval)
+execute_q2(q2dot3df_1, interval, Q2_3_SendToDynamoDB_ForeachWriter)
+execute_q2(q2dot3df_2, interval, Q2_3_SendToDynamoDB_ForeachWriter)
+execute_q2(q2dot3df_3, interval, Q2_3_SendToDynamoDB_ForeachWriter)
+execute_q2(q2dot3df_4, interval, Q2_3_SendToDynamoDB_ForeachWriter)
 '''
 execute(q3dot2_df1, interval)
 execute(q3dot2_df2, interval)
