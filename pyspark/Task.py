@@ -172,6 +172,7 @@ def foreach_batch_function(df, epoch_id):
     df = df.selectExpr("CAST(value AS STRING)") \
        .select(from_json(col('value'), schema).alias("data")).select("data.*")
     # =============== Q3.2 ===============
+    df = df.filter(df["Origin"] != "Origin")
     df_2008 = df
     df_2008 = df_2008.withColumn("FlightDateUniform", 
                                 to_date(col("FlightDate"), 
