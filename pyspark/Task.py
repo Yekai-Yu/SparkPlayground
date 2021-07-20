@@ -250,7 +250,7 @@ q2_2_table_name = "q2.2"
 q2_3_table_name = "q2.3"
 
 def get_dynamodb():
-  return boto3.resource('dynamodb')
+  return boto3.resource('dynamodb', region_name = "us-east-1")
 
 class Q2_1_SendToDynamoDB_ForeachWriter:
   '''
