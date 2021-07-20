@@ -361,7 +361,7 @@ def execute_q2(df_, t, writer):
     q = (
         df_.writeStream\
             .foreach(writer) \
-            .outputMode("update") \
+            .outputMode("append") \
             .start()
     )
     stop_stream_query(q, t)
