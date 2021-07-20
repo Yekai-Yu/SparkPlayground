@@ -43,7 +43,7 @@ schema = StructType() \
 df = spark \
   .readStream \
   .format("kafka") \
-  .option("kafka.bootstrap.servers", "b-2.mp2-msk.pkebtt.c11.kafka.us-east-1.amazonaws.com:9092,b-1.mp2-msk.pkebtt.c11.kafka.us-east-1.amazonaws.com:9092") \
+  .option("kafka.bootstrap.servers", "b-1.mp2.zetw14.c11.kafka.us-east-1.amazonaws.com:9092,b-2.mp2.zetw14.c11.kafka.us-east-1.amazonaws.com:9092") \
   .option("subscribe", "AWSKafkaTutorialTopic") \
   .option("startingOffsets", "earliest") \
   .load()
@@ -65,7 +65,7 @@ q1dot3df = df.select(col("UniqueCarrier"), col("ArrDelay")) \
              .orderBy("AVG(ArrDelay)") \
              .limit(10)
 
-
+'''
 # =============== Q2.1 ===============
 q2dot1df_SRQ = df.select("Origin", "UniqueCarrier", "DepDelay") \
                 .where(col("Origin") == "SRQ") \
@@ -238,6 +238,7 @@ q3dot2_df2 = df_X_Y_Z_select.where(col("XY.Origin") == "PHX" & col("XY.Dest") ==
 q3dot2_df3 = df_X_Y_Z_select.where(col("XY.Origin") == "DFW" & col("XY.Dest") == "STL" & col("YZ.Dest") == "ORD" & col("Sched Depart 1").like("%2008-01-24%"))
 q3dot2_df4 = df_X_Y_Z_select.where(col("XY.Origin") == "LAX" & col("XY.Dest") == "MIA" & col("YZ.Dest") == "LAX" & col("Sched Depart 1").like("%2008-05-16%"))
 
+'''
 
 def execute(df_, t):
     q = (
@@ -256,6 +257,7 @@ execute(q1dot2df, interval)
 
 execute(q1dot3df, interval)
 
+'''
 execute(q2dot1df_SRQ, interval)
 execute(q2dot1df_CMH, interval)
 execute(q2dot1df_JFK, interval)
@@ -277,3 +279,4 @@ execute(q3dot2_df1, interval)
 execute(q3dot2_df2, interval)
 execute(q3dot2_df3, interval)
 execute(q3dot2_df4, interval)
+'''
