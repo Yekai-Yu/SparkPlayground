@@ -276,7 +276,7 @@ class Q2_1_SendToDynamoDB_ForeachWriter:
     self.dynamodb.Table(q2_1_table_name).put_item(
         Item = { 'origin': str(row['Origin']), 
                  'carrier': str(row['UniqueCarrier']),
-                 'avgDelay': str(row['AVG(DepDelay)']) })
+                 'avgDelay': str(row['avg(DepDelay)']) })
 
   def close(self, err):
     # This is called after all the rows have been processed.
@@ -307,7 +307,7 @@ class Q2_2_SendToDynamoDB_ForeachWriter:
     self.dynamodb.Table(q2_2_table_name).put_item(
         Item = { 'origin': str(row['Origin']), 
                  'dest': str(row['Dest']),
-                 'avgDelay': str(row['AVG(DepDelay)']) })
+                 'avgDelay': str(row['avg(DepDelay)']) })
 
   def close(self, err):
     # This is called after all the rows have been processed.
@@ -339,7 +339,7 @@ class Q2_3_SendToDynamoDB_ForeachWriter:
         Item = { 'origin': str(row['Origin']), 
                  'dest': str(row['UniqueCarrier']),
                  'carrier': str(row['UniqueCarrier']),
-                 'avgDelay': str(row['AVG(ArrDelay)']) })
+                 'avgDelay': str(row['avg(ArrDelay)']) })
 
   def close(self, err):
     # This is called after all the rows have been processed.
