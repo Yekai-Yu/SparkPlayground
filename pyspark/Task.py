@@ -187,7 +187,7 @@ def foreach_batch_function(df, epoch_id):
     df_X_Y = df_2008.filter(concat(lpad(hour(col("CRSDepTimeUniform")),2,'0'), 
                                 lpad(minute(col("CRSDepTimeUniform")), 2, '0'))
                             .between(lit("0000"), lit("1200"))) \
-                            .withColumnRenamed("CRSDepTimeUniform", "XY.CRSDepTimeUniform")
+                            .withColumnRenamed("CRSDepTimeUniform", "XY-CRSDepTimeUniform")
     df_X_Y = df_X_Y.alias("XY")
     # individual date arrival performance
     df_X_Y_groupby = df_X_Y.groupBy("Origin", "Dest", "FlightDateUniform") \
@@ -208,7 +208,7 @@ def foreach_batch_function(df, epoch_id):
     df_Y_Z = df_2008.filter(concat(lpad(hour(col("CRSDepTimeUniform")),2,'0'), 
                                 lpad(minute(col("CRSDepTimeUniform")), 2, '0'))
                             .between(lit("1200"), lit("2400"))) \
-                            .withColumnRenamed("CRSDepTimeUniform", "YZ.CRSDepTimeUniform")
+                            .withColumnRenamed("CRSDepTimeUniform", "YZ-CRSDepTimeUniform")
     df_Y_Z = df_Y_Z.alias("YZ")
     # individual date arrival performance
     df_Y_Z_groupby = df_Y_Z.groupBy("Origin", "Dest", "FlightDateUniform") \
@@ -227,7 +227,7 @@ def foreach_batch_function(df, epoch_id):
    
 
     print("*** Joining XY & YZ ***")
-    df_X_Y_Z = df_X_Y.join(df_Y_Z, col("XY.Dest") == col("YZ.Origin"), 'left') \
+    df_X_Y_Z = df_X_Y.join(df_Y_Z, col("XY.Dest") == col("YZ.Origin"), 'inner') \
                     .where(datediff(col("YZ.FlightDateUniform"), 
                                     col("XY.FlightDateUniform")) == 2)
 
@@ -238,7 +238,7 @@ def foreach_batch_function(df, epoch_id):
                                             lit(" "), 
                                             col("XY.FlightNum"))
                                             .alias("Airline/Flight Number 1"), 
-                                    date_format(col("XY.XY.CRSDepTimeUniform"), "HH:mm dd/MM/yyyy")
+                                    date_format(col("XY.XY-CRSDepTimeUniform"), "HH:mm dd/MM/yyyy")
                                                 .alias("Sched Depart 1"), 
                                     col("XY.ArrDelay").alias("Arrival Delay 1"), 
                                     col("YZ.Origin").alias("Origin 2"), 
@@ -247,7 +247,7 @@ def foreach_batch_function(df, epoch_id):
                                             lit(" "), 
                                             col("YZ.FlightNum"))
                                             .alias("Airline/Flight Number 2"), 
-                                    date_format(col("YZ.YZ.CRSDepTimeUniform"), "HH:mm dd/MM/yyyy")
+                                    date_format(col("YZ.YZ-CRSDepTimeUniform"), "HH:mm dd/MM/yyyy")
                                                 .alias("Sched Depart 2"), 
                                     col("YZ.ArrDelay").alias("Arrival Delay 2"))
 
