@@ -198,9 +198,9 @@ def foreach_batch_function(df, epoch_id):
                 (col("XY.ArrDelay") == col("XYGroupBy.min(ArrDelay)"))]
     df_X_Y = df_X_Y.join(df_X_Y_groupby, X_Y_cond, "inner")
     df_X_Y = df_X_Y.drop("min(ArrDelay)")
+    df_X_Y = df_X_Y.alias("XY")
     df_X_Y.show()
-    t = df_X_Y.select(col("XY.CRSDepTimeUniform"))
-    t.show()
+    
     print("second leg, after 12:00PM")
     df_Y_Z = df_2008.filter(concat(lpad(hour(col("CRSDepTimeUniform")),2,'0'), 
                                 lpad(minute(col("CRSDepTimeUniform")), 2, '0'))
@@ -215,9 +215,9 @@ def foreach_batch_function(df, epoch_id):
                 (col("YZ.ArrDelay") == col("YZGroupBy.min(ArrDelay)"))]
     df_Y_Z = df_Y_Z.join(df_Y_Z_groupby, Y_Z_cond, "inner")
     df_Y_Z = df_Y_Z.drop("min(ArrDelay)")
+    df_Y_Z = df_Y_Z.alias("YZ")
     df_Y_Z.show()
-    t = df_Y_Z.select(col("YZ.CRSDepTimeUniform"))
-    t.show()
+   
 
     print("*** Joining XY & YZ ***")
     df_X_Y_Z = df_X_Y.join(df_Y_Z, col("XY.Dest") == col("YZ.Origin"), 'inner') \
