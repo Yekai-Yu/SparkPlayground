@@ -2,6 +2,7 @@ package com.example.mp2;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.amazonaws.http.AmazonHttpClient;
@@ -18,6 +19,7 @@ import org.apache.spark.examples.streaming.StreamingExamples;
 import org.apache.spark.storage.StorageLevel;
 import org.apache.spark.streaming.Duration;
 import org.apache.spark.streaming.api.java.JavaDStream;
+import org.apache.spark.streaming.api.java.JavaPairDStream;
 import org.apache.spark.streaming.api.java.JavaStreamingContext;
 import org.apache.spark.streaming.kinesis.KinesisInitialPositions;
 import org.apache.spark.streaming.kinesis.KinesisInputDStream;
@@ -25,6 +27,7 @@ import org.apache.spark.streaming.kinesis.KinesisInputDStream;
 import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.regions.RegionUtils;
 import com.amazonaws.services.kinesis.AmazonKinesisClient;
+import scala.Tuple2;
 import scala.reflect.ClassTag$;
 
 public class StreamClient {
@@ -99,21 +102,29 @@ public class StreamClient {
             unionStreams = streamsList.get(0);
         }
         System.out.println("Transformation  Entry ........  "+unionStreams);
-        JavaDStream<String> dStream = unionStreams.map(new Function<byte[], String>() {
-            public String call(byte[] line) throws Exception {
-                String data =new String(line,StandardCharsets.UTF_8);
-                //System.err.println("STDERR File Data Received...      "+data);
-                System.out.println("STDOUT File Data Received...      "+data);
-                return data;
-            }
-        });
-        /* Output Operation on the DStream Object */
         AmazonDynamoDBClient dynamoDBClient = new AmazonDynamoDBClient(new DefaultAWSCredentialsProviderChain());
-        Item item = new Item().withPrimaryKey("Id", 120).withString("Payload", dStream.toString());
         DynamoDB dynamoDB = new DynamoDB(dynamoDBClient);
         Table table = dynamoDB.getTable("mp2-test");
-        table.putItem(item);
-        dStream.print();
+
+//        JavaDStream<String> dStream = unionStreams.map(new Function<byte[], String>() {
+//            public String call(byte[] line) throws Exception {
+//                String data =new String(line,StandardCharsets.UTF_8);
+//                //System.err.println("STDERR File Data Received...      "+data);
+//                System.out.println("STDOUT File Data Received...      "+data);
+//                Item item = new Item().withPrimaryKey("id", String.valueOf(data.hashCode())).withString("payload", data);
+//                table.putItem(item);
+//                return data;
+//            }
+//        });
+        /* Output Operation on the DStream Object */
+//        dStream.print();
+
+        JavaDStream<String> words = unionStreams.map(String::new).flatMap(x -> Arrays.asList(x.split(",")).iterator());
+        JavaPairDStream<String, Integer> pairs = words.mapToPair(s -> new Tuple2<>(s, 1));
+        JavaPairDStream<String, Integer> wordCounts = pairs.reduceByKey((i1, i2) -> i1 + i2);
+        wordCounts.foreachRDD(rdd -> {
+            rdd.map(pair -> table.putItem(new Item().withPrimaryKey("id", String.valueOf(pair._1)).withString("payload", String.valueOf(pair._2)))).cache();
+        });
         jssc.start();
         jssc.awaitTermination();
     }
