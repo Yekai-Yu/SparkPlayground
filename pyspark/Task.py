@@ -251,7 +251,7 @@ def foreach_batch_function(df, epoch_id):
                                                 .alias("Sched Depart 2"), 
                                     col("YZ.ArrDelay").alias("Arrival Delay 2"))
 
-    q3dot2_df1 = df_X_Y_Z_select.where((col("XY.Origin") == "BOS") & (col("XY.Dest") == "ATL") & (col("YZ.Dest") == "LAX") & col("Sched Depart 1").like("%/2008%"))
+    q3dot2_df1 = df_X_Y_Z_select.where((col("XY.Origin") == "STL") & (col("XY.Dest") == "MSY") & (col("YZ.Dest") == "STL") & col("Sched Depart 1").like("%/2008%"))
     q3dot2_df1.show()
     print("Compelete query, writing to dynamo")
     for entry in q3dot2_df1.rdd.collect():
