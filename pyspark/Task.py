@@ -51,117 +51,118 @@ df = spark \
 df = df.selectExpr("CAST(value AS STRING)") \
        .select(from_json(col('value'), schema).alias("data")).select("data.*") \
 
-
+'''
 # =============== Q1.2 ===============
 q1dot2df = df.select(col("DayOfWeek"), col("ArrDelay")) \
              .groupBy(col("DayOfWeek")) \
              .agg({"ArrDelay": "avg"}) \
              .orderBy("AVG(ArrDelay)")
-
+'''
 # =============== Q1.3 ===============
 q1dot3df = df.select(col("UniqueCarrier"), col("ArrDelay")) \
              .groupBy(col("UniqueCarrier")) \
              .agg({"ArrDelay": "avg"}) \
              .orderBy("AVG(ArrDelay)") \
-             .limit(10)
+             .limit(11)
 
-'''
+
 # =============== Q2.1 ===============
 q2dot1df_SRQ = df.select("Origin", "UniqueCarrier", "DepDelay") \
                 .where(col("Origin") == "SRQ") \
                 .groupBy(col("Origin"), col("UniqueCarrier")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(10)
+                .limit(11)
 
 q2dot1df_CMH = df.select("Origin", "UniqueCarrier", "DepDelay") \
                 .where(col("Origin") == "CMH") \
                 .groupBy(col("Origin"), col("UniqueCarrier")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(10)
+                .limit(11)
 
 q2dot1df_JFK = df.select("Origin", "UniqueCarrier", "DepDelay") \
                 .where(col("Origin") == "JFK") \
                 .groupBy(col("Origin"), col("UniqueCarrier")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(10)
+                .limit(11)
 
 q2dot1df_SEA = df.select("Origin", "UniqueCarrier", "DepDelay") \
                 .where(col("Origin") == "SEA") \
                 .groupBy(col("Origin"), col("UniqueCarrier")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(10)
+                .limit(11)
 
 q2dot1df_BOS = df.select("Origin", "UniqueCarrier", "DepDelay") \
                 .where(col("Origin") == "BOS") \
                 .groupBy(col("Origin"), col("UniqueCarrier")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(10)
+                .limit(11)
 
+'''
 # =============== Q2.2 ===============
 q2dot2df_SRQ = df.select("Origin", "Dest", "DepDelay") \
                 .where(col("Origin") == "SRQ") \
                 .groupBy(col("Origin"), col("Dest")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(10)
+                .limit(11)
 
 q2dot2df_CMH = df.select("Origin", "Dest", "DepDelay") \
                 .where(col("Origin") == "CMH") \
                 .groupBy(col("Origin"), col("Dest")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(10)
+                .limit(11)
 
 q2dot2df_JFK = df.select("Origin", "Dest", "DepDelay") \
                 .where(col("Origin") == "JFK") \
                 .groupBy(col("Origin"), col("Dest")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(10)
+                .limit(11)
 
 q2dot2df_SEA = df.select("Origin", "Dest", "DepDelay") \
                 .where(col("Origin") == "SEA") \
                 .groupBy(col("Origin"), col("Dest")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(10)
+                .limit(11)
 
 q2dot2df_BOS = df.select("Origin", "Dest", "DepDelay") \
                 .where(col("Origin") == "BOS") \
                 .groupBy(col("Origin"), col("Dest")) \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
-                .limit(10)
+                .limit(11)
 
 # =============== Q2.3 ===============
 q2dot3df_1 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where(col("Origin") == "LGA" & col("Dest") == "BOS") \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
-                .limit(10)
+                .limit(11)
 
 q2dot3df_2 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where(col("Origin") == "BOS" & col("Dest") == "LGA") \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
-                .limit(10)
+                .limit(11)
 
 q2dot3df_3 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where(col("Origin") == "OKC" & col("Dest") == "DFW") \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
-                .limit(10)
+                .limit(11)
 
 q2dot3df_4 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where(col("Origin") == "MSP" & col("Dest") == "ATL") \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
-                .limit(10)
+                .limit(11)
 
 # =============== Q3.2 ===============
 df_2008 = df
@@ -253,17 +254,16 @@ def execute(df_, t):
 
 # =============== Execution ===============
 interval = 5
-execute(q1dot2df, interval)
 
+#execute(q1dot2df, interval)
 execute(q1dot3df, interval)
 
-'''
 execute(q2dot1df_SRQ, interval)
 execute(q2dot1df_CMH, interval)
 execute(q2dot1df_JFK, interval)
 execute(q2dot1df_SEA, interval)
 execute(q2dot1df_BOS, interval)
-
+'''
 execute(q2dot2df_SRQ, interval)
 execute(q2dot2df_CMH, interval)
 execute(q2dot2df_JFK, interval)
