@@ -48,9 +48,6 @@ df = spark \
   .option("startingOffsets", "earliest") \
   .load()
 
-df = df.selectExpr("CAST(value AS STRING)") \
-       .select(from_json(col('value'), schema).alias("data")).select("data.*")
-
 '''
 # =============== Q1.2 ===============
 q1dot2df = df.select(col("DayOfWeek"), col("ArrDelay")) \
@@ -172,6 +169,8 @@ def get_dynamodb():
 
 def foreach_batch_function(df, epoch_id):
     q3_2_table_name = "q3.2"
+    df = df.selectExpr("CAST(value AS STRING)") \
+       .select(from_json(col('value'), schema).alias("data")).select("data.*")
     # =============== Q3.2 ===============
     df_2008 = df
     df_2008 = df_2008.withColumn("FlightDateUniform", 
@@ -240,15 +239,15 @@ def foreach_batch_function(df, epoch_id):
                                                 .alias("Sched Depart 2"), 
                                     col("YZ.ArrDelay").alias("Arrival Delay 2"))
 
-    q3dot2_df1 = df_X_Y_Z_select.where((col("XY.Origin") == "BOS") & (col("XY.Dest") == "ATL") & (col("YZ.Dest") == "LAX") & col("Sched Depart 1").like("%2008-04-03%"))
+    q3dot2_df1 = df_X_Y_Z_select.where((col("XY.Origin") == "BOS") & (col("XY.Dest") == "ATL") & (col("YZ.Dest") == "LAX") & col("Sched Depart 1").like("%03/04/2008%"))
     print("Compelete query, writing to dynamo")
     get_dynamodb().Table(q3_2_table_name).put_item(
         Item = { 'origin-tran-dest': str(q3dot2_df1['Origin 1']) + "-" + str(q3dot2_df1['Destination 1'] + "-" + str(q3dot2_df1["Destination 2"]) + "-" + str(q3dot2_df1["Sched Depart 1"]) + "-" + str(q3dot2_df1["Sched Depart 2"])), 
                  'totalArrDelay': str(q3dot2_df1['Arrival Delay 1']) + "," + str(q3dot2_df1['Arrival Delay 2']) })
     
-    # q3dot2_df2 = df_X_Y_Z_select.where((col("XY.Origin") == "PHX") & (col("XY.Dest") == "JFK") & (col("YZ.Dest") == "MSP") & col("Sched Depart 1").like("%2008-09-07%"))
-    # q3dot2_df3 = df_X_Y_Z_select.where((col("XY.Origin") == "DFW") & (col("XY.Dest") == "STL") & (col("YZ.Dest") == "ORD") & col("Sched Depart 1").like("%2008-01-24%"))
-    # q3dot2_df4 = df_X_Y_Z_select.where((col("XY.Origin") == "LAX") & (col("XY.Dest") == "MIA") & (col("YZ.Dest") == "LAX") & col("Sched Depart 1").like("%2008-05-16%"))
+    # q3dot2_df2 = df_X_Y_Z_select.where((col("XY.Origin") == "PHX") & (col("XY.Dest") == "JFK") & (col("YZ.Dest") == "MSP") & col("Sched Depart 1").like("%07/09/2008%"))
+    # q3dot2_df3 = df_X_Y_Z_select.where((col("XY.Origin") == "DFW") & (col("XY.Dest") == "STL") & (col("YZ.Dest") == "ORD") & col("Sched Depart 1").like("%24/01/2008%"))
+    # q3dot2_df4 = df_X_Y_Z_select.where((col("XY.Origin") == "LAX") & (col("XY.Dest") == "MIA") & (col("YZ.Dest") == "LAX") & col("Sched Depart 1").like("%16/05/2008%"))
 
 
 
