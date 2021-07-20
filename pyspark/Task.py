@@ -144,28 +144,28 @@ q2dot3df_1 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where((col("Origin") == "LGA") & (col("Dest") == "BOS")) \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
-                .orderBy(col("AVG(ArrDelay)")) \
+                .orderBy(col("AVG(ArrDelay)").asc()) \
                 .limit(11)
 
 q2dot3df_2 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where((col("Origin") == "BOS") & (col("Dest") == "LGA")) \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
-                .orderBy(col("AVG(ArrDelay)")) \
+                .orderBy(col("AVG(ArrDelay)").asc()) \
                 .limit(11)
 
 q2dot3df_3 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where((col("Origin") == "OKC") & (col("Dest") == "DFW")) \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
-                .orderBy(col("AVG(ArrDelay)")) \
+                .orderBy(col("AVG(ArrDelay)").asc()) \
                 .limit(11)
 
 q2dot3df_4 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where((col("Origin") == "MSP") & (col("Dest") == "ATL")) \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
-                .orderBy(col("AVG(ArrDelay)")) \
+                .orderBy(col("AVG(ArrDelay)").asc()) \
                 .limit(11)
 '''
 # =============== Q3.2 ===============
