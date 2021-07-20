@@ -365,6 +365,7 @@ def execute_q2(df_, t, writer):
             .start()
     )
     stop_stream_query(q, t)
+    print("--- Done ---")
 
 
 # =============== Execution ===============
