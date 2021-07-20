@@ -245,9 +245,9 @@ q3dot2_df4 = df_X_Y_Z_select.where(col("XY.Origin") == "LAX" & col("XY.Dest") ==
 
 '''
 
-q2_1_table_name = "q2.1"
-q2_2_table_name = "q2.2"
-q2_3_table_name = "q2.3"
+q2_1_table_name = "q2.1.0"
+q2_2_table_name = "q2.2.0"
+q2_3_table_name = "q2.3.0"
 
 def get_dynamodb():
   return boto3.resource('dynamodb', region_name = "us-east-1")
@@ -273,9 +273,9 @@ class Q2_1_SendToDynamoDB_ForeachWriter:
     # This implementation sends one row at a time.
     # For further enhancements, contact the Spark+DynamoDB connector
     # team: https://github.com/audienceproject/spark-dynamodb
+    row
     self.dynamodb.Table(q2_1_table_name).put_item(
-        Item = { 'origin': str(row['Origin']), 
-                 'carrier': str(row['UniqueCarrier']),
+        Item = { 'origin-carrier': str(row['Origin']) + "-" + str(row['UniqueCarrier']), 
                  'avgDelay': str(row['avg(DepDelay)']) })
 
   def close(self, err):
@@ -305,8 +305,7 @@ class Q2_2_SendToDynamoDB_ForeachWriter:
     # For further enhancements, contact the Spark+DynamoDB connector
     # team: https://github.com/audienceproject/spark-dynamodb
     self.dynamodb.Table(q2_2_table_name).put_item(
-        Item = { 'origin': str(row['Origin']), 
-                 'dest': str(row['Dest']),
+        Item = { 'origin-dest': str(row['Origin']) + "-" + str(row['Dest']), 
                  'avgDelay': str(row['avg(DepDelay)']) })
 
   def close(self, err):
@@ -336,9 +335,7 @@ class Q2_3_SendToDynamoDB_ForeachWriter:
     # For further enhancements, contact the Spark+DynamoDB connector
     # team: https://github.com/audienceproject/spark-dynamodb
     self.dynamodb.Table(q2_3_table_name).put_item(
-        Item = { 'origin': str(row['Origin']), 
-                 'dest': str(row['UniqueCarrier']),
-                 'carrier': str(row['UniqueCarrier']),
+        Item = { 'origin-dest-carrier': str(row['Origin']) + "-" + str(row['UniqueCarrier']) + "-" + str(row['UniqueCarrier']), 
                  'avgDelay': str(row['avg(ArrDelay)']) })
 
   def close(self, err):
@@ -361,7 +358,7 @@ def execute_q2(df_, t, writer):
     q = (
         df_.writeStream\
             .foreach(writer) \
-            .outputMode("append") \
+            .outputMode("complete") \
             .start()
     )
     stop_stream_query(q, t)
