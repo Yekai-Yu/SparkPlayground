@@ -102,7 +102,7 @@ q2dot1df_BOS = df.select("Origin", "UniqueCarrier", "DepDelay") \
                 .orderBy(col("AVG(DepDelay)").asc()) \
                 .limit(11)
 
-'''
+
 # =============== Q2.2 ===============
 q2dot2df_SRQ = df.select("Origin", "Dest", "DepDelay") \
                 .where(col("Origin") == "SRQ") \
@@ -138,30 +138,34 @@ q2dot2df_BOS = df.select("Origin", "Dest", "DepDelay") \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
                 .limit(11)
-
+'''
 # =============== Q2.3 ===============
 q2dot3df_1 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where((col("Origin") == "LGA") & (col("Dest") == "BOS")) \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
+                .orderBy(col("AVG(ArrDelay)")) \
                 .limit(11)
 
 q2dot3df_2 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where((col("Origin") == "BOS") & (col("Dest") == "LGA")) \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
+                .orderBy(col("AVG(ArrDelay)")) \
                 .limit(11)
 
 q2dot3df_3 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where((col("Origin") == "OKC") & (col("Dest") == "DFW")) \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
+                .orderBy(col("AVG(ArrDelay)")) \
                 .limit(11)
 
 q2dot3df_4 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where((col("Origin") == "MSP") & (col("Dest") == "ATL")) \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
                 .agg({"ArrDelay": "avg"}) \
+                .orderBy(col("AVG(ArrDelay)")) \
                 .limit(11)
 '''
 # =============== Q3.2 ===============
@@ -264,11 +268,11 @@ interval = 5
 # execute(q2dot1df_SEA, interval)
 # execute(q2dot1df_BOS, interval)
 
-execute(q2dot2df_SRQ, interval)
-execute(q2dot2df_CMH, interval)
-execute(q2dot2df_JFK, interval)
-execute(q2dot2df_SEA, interval)
-execute(q2dot2df_BOS, interval)
+# execute(q2dot2df_SRQ, interval)
+# execute(q2dot2df_CMH, interval)
+# execute(q2dot2df_JFK, interval)
+# execute(q2dot2df_SEA, interval)
+# execute(q2dot2df_BOS, interval)
 
 execute(q2dot3df_1, interval)
 execute(q2dot3df_2, interval)
