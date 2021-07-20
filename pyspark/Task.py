@@ -254,8 +254,8 @@ def foreach_batch_function(df, epoch_id):
     q3dot2_df1 = df_X_Y_Z_select.where((col("XY.Origin") == "BOS") & (col("XY.Dest") == "ATL") & (col("YZ.Dest") == "LAX") & col("Sched Depart 1").like("%03/04/2008%"))
     print("Compelete query, writing to dynamo")
     get_dynamodb().Table(q3_2_table_name).put_item(
-        Item = { 'origin-tran-dest': str(q3dot2_df1['Origin 1']) + "-" + str(q3dot2_df1['Destination 1'] + "-" + str(q3dot2_df1["Destination 2"]) + "-" + str(q3dot2_df1["Sched Depart 1"]) + "-" + str(q3dot2_df1["Sched Depart 2"])), 
-                 'totalArrDelay': str(q3dot2_df1['Arrival Delay 1']) + "," + str(q3dot2_df1['Arrival Delay 2']) })
+        Item = { 'origin-tran-dest': q3dot2_df1['Origin 1'] + "-" + q3dot2_df1['Destination 1'] + "-" + q3dot2_df1["Destination 2"] + "-" + q3dot2_df1["Sched Depart 1"] + "-" + q3dot2_df1["Sched Depart 2"], 
+                 'totalArrDelay': q3dot2_df1['Arrival Delay 1'] + "," + q3dot2_df1['Arrival Delay 2'] })
 '''    
     # q3dot2_df2 = df_X_Y_Z_select.where((col("XY.Origin") == "PHX") & (col("XY.Dest") == "JFK") & (col("YZ.Dest") == "MSP") & col("Sched Depart 1").like("%07/09/2008%"))
     # q3dot2_df3 = df_X_Y_Z_select.where((col("XY.Origin") == "DFW") & (col("XY.Dest") == "STL") & (col("YZ.Dest") == "ORD") & col("Sched Depart 1").like("%24/01/2008%"))
