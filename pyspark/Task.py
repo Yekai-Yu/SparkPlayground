@@ -186,13 +186,13 @@ def foreach_batch_function(df, epoch_id):
     print("first leg, before 12:00PM")
     df_X_Y = df_2008.filter(concat(lpad(hour(col("CRSDepTimeUniform")),2,'0'), 
                                 lpad(minute(col("CRSDepTimeUniform")), 2, '0'))
-                            .between(lit("0000"), lit("1200"))) \
-                            .withColumnRenamed("CRSDepTimeUniform", "XY.CRSDepTimeUniform")
+                            .between(lit("0000"), lit("1200")))
+                            # .withColumnRenamed("CRSDepTimeUniform", "XY.CRSDepTimeUniform")
     df_X_Y = df_X_Y.alias("XY")
     # individual date arrival performance
     df_X_Y_groupby = df_X_Y.groupBy("Origin", "Dest", "FlightDateUniform") \
-                        .agg({"ArrDelay": "min"})
-                        # .drop("ArrDelay").withColumnRenamed("min(ArrDelay)", "ArrDelay")
+                        .agg({"ArrDelay": "min"}) \
+                        .drop("ArrDelay").withColumnRenamed("min(ArrDelay)", "ArrDelay")
     df_X_Y_groupby = df_X_Y_groupby.alias("XYGroupBy")
     # X_Y_cond = [(col("XY.Origin") == col("XYGroupBy.Origin")), 
     #             (col("XY.Dest") == col("XYGroupBy.Dest")), 
