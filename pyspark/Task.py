@@ -362,8 +362,6 @@ def execute_q2(df_, t, writer):
         df_.writeStream\
             .foreach(writer) \
             .outputMode("complete") \
-            .option("truncate", "false")\
-            .format("console") \
             .start()
     )
     stop_stream_query(q, t)
@@ -387,10 +385,10 @@ execute_q2(q2dot2df_JFK, interval, Q2_2_SendToDynamoDB_ForeachWriter())
 execute_q2(q2dot2df_SEA, interval, Q2_2_SendToDynamoDB_ForeachWriter())
 execute_q2(q2dot2df_BOS, interval, Q2_2_SendToDynamoDB_ForeachWriter())
 
-execute_q2(q2dot3df_1, interval, Q2_3_SendToDynamoDB_ForeachWriter)
-execute_q2(q2dot3df_2, interval, Q2_3_SendToDynamoDB_ForeachWriter)
-execute_q2(q2dot3df_3, interval, Q2_3_SendToDynamoDB_ForeachWriter)
-execute_q2(q2dot3df_4, interval, Q2_3_SendToDynamoDB_ForeachWriter)
+execute_q2(q2dot3df_1, interval, Q2_3_SendToDynamoDB_ForeachWriter())
+execute_q2(q2dot3df_2, interval, Q2_3_SendToDynamoDB_ForeachWriter())
+execute_q2(q2dot3df_3, interval, Q2_3_SendToDynamoDB_ForeachWriter())
+execute_q2(q2dot3df_4, interval, Q2_3_SendToDynamoDB_ForeachWriter())
 '''
 execute(q3dot2_df1, interval)
 execute(q3dot2_df2, interval)
