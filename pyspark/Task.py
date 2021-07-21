@@ -178,7 +178,8 @@ def write_to_table(df, table_name):
 def foreach_batch_function(df, epoch_id):
     q3_2_table_name = "q3.2"
     df = df.selectExpr("CAST(value AS STRING)") \
-       .select(from_json(col('value'), schema).alias("data")).select("data.*")
+       .select(from_json(col('value'), schema).alias("data")).select("data.*") \
+       .withColumn("ArrDelay", col("ArrDelay").cast("float"))
     # =============== Q3.2 ===============
     df_2008 = df
     df_2008 = df_2008.withColumn("FlightDateUniform", 
@@ -257,27 +258,37 @@ def foreach_batch_function(df, epoch_id):
                                             .alias("Airline/Flight Number 2"), 
                                     date_format(col("YZ.YZ-CRSDepTimeUniform"), "HH:mm dd/MM/yyyy")
                                                 .alias("Sched Depart 2"), 
-                                    col("YZ.ArrDelay").alias("Arrival Delay 2"))
-
-    q3dot2_df1 = df_X_Y_Z_select.where((col("XY.Origin") == "BOS") & (col("XY.Dest") == "ATL") & (col("YZ.Dest") == "LAX") & col("Sched Depart 1").like("%03/04/2008%"))
-    q3dot2_df1.show()
-    print("Compelete query, writing to dynamo")
-    write_to_table(q3dot2_df1, q3_2_table_name)
+                                    col("YZ.ArrDelay").alias("Arrival Delay 2")) \
+                                .withColumn("finalKey", concat(col("Origin 1"), lit("-"), col("Destination 1"), lit("-"), col("Destination 2"), lit("-"), date_format(col("Sched Depart 1"), "dd-MM-yyyy")))
     
-    q3dot2_df2 = df_X_Y_Z_select.where((col("XY.Origin") == "PHX") & (col("XY.Dest") == "JFK") & (col("YZ.Dest") == "MSP") & col("Sched Depart 1").like("%07/09/2008%"))
-    q3dot2_df2.show()
-    print("Compelete query, writing to dynamo")
-    write_to_table(q3dot2_df2, q3_2_table_name)
-    
-    q3dot2_df3 = df_X_Y_Z_select.where((col("XY.Origin") == "DFW") & (col("XY.Dest") == "STL") & (col("YZ.Dest") == "ORD") & col("Sched Depart 1").like("%24/01/2008%"))
-    q3dot2_df3.show()
-    print("Compelete query, writing to dynamo")
-    write_to_table(q3dot2_df3, q3_2_table_name)
 
-    q3dot2_df4 = df_X_Y_Z_select.where((col("XY.Origin") == "LAX") & (col("XY.Dest") == "MIA") & (col("YZ.Dest") == "LAX") & col("Sched Depart 1").like("%16/05/2008%"))
-    q3dot2_df4.show()
+    cond1 = "BOS-ATL-LAX-03-04-2008"
+    cond2 = "PHX-JFK-MSP-07-09-2008"
+    cond3 = "DFW-STL-ORD-24-01-2008"
+    cond4 = "LAX-MIA-LAX-16-05-2008"
+    q3dot2_df = df_X_Y_Z_select.where(col("finalKey").isin(cond1, cond2, cond3, cond4))
     print("Compelete query, writing to dynamo")
-    write_to_table(q3dot2_df4, q3_2_table_name)
+    write_to_table(q3dot2_df, q3_2_table_name)
+
+    # q3dot2_df1 = df_X_Y_Z_select.where((col("XY.Origin") == "BOS") & (col("XY.Dest") == "ATL") & (col("YZ.Dest") == "LAX") & col("Sched Depart 1").like("%03/04/2008%"))
+    # # q3dot2_df1.show()
+    # print("Compelete query, writing to dynamo")
+    # write_to_table(q3dot2_df1, q3_2_table_name)
+    
+    # q3dot2_df2 = df_X_Y_Z_select.where((col("XY.Origin") == "PHX") & (col("XY.Dest") == "JFK") & (col("YZ.Dest") == "MSP") & col("Sched Depart 1").like("%07/09/2008%"))
+    # # q3dot2_df2.show()
+    # print("Compelete query, writing to dynamo")
+    # write_to_table(q3dot2_df2, q3_2_table_name)
+    
+    # q3dot2_df3 = df_X_Y_Z_select.where((col("XY.Origin") == "DFW") & (col("XY.Dest") == "STL") & (col("YZ.Dest") == "ORD") & col("Sched Depart 1").like("%24/01/2008%"))
+    # # q3dot2_df3.show()
+    # print("Compelete query, writing to dynamo")
+    # write_to_table(q3dot2_df3, q3_2_table_name)
+
+    # q3dot2_df4 = df_X_Y_Z_select.where((col("XY.Origin") == "LAX") & (col("XY.Dest") == "MIA") & (col("YZ.Dest") == "LAX") & col("Sched Depart 1").like("%16/05/2008%"))
+    # # q3dot2_df4.show()
+    # print("Compelete query, writing to dynamo")
+    # write_to_table(q3dot2_df4, q3_2_table_name)
 
     
 
@@ -372,7 +383,7 @@ class Q2_3_SendToDynamoDB_ForeachWriter:
     # For further enhancements, contact the Spark+DynamoDB connector
     # team: https://github.com/audienceproject/spark-dynamodb
     self.dynamodb.Table(q2_3_table_name).put_item(
-        Item = { 'origin-dest-carrier': str(row['Origin']) + "-" + str(row['UniqueCarrier']) + "-" + str(row['UniqueCarrier']), 
+        Item = { 'origin-dest-carrier': str(row['Origin']) + "-" + str(row['Dest']) + "-" + str(row['UniqueCarrier']), 
                  'avgDelay': str(row['avg(ArrDelay)']) })
 
   def close(self, err):
