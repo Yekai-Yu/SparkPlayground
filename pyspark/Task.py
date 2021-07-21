@@ -136,6 +136,9 @@ q2dot2df_BOS = df.select("Origin", "Dest", "DepDelay") \
                 .limit(10)
 '''
 # =============== Q2.3 ===============
+df = df.selectExpr("CAST(value AS STRING)") \
+    .select(from_json(col('value'), schema).alias("data")).select("data.*") 
+    
 q2dot3df_1 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where((col("Origin") == "LGA") & (col("Dest") == "BOS")) \
                 .groupby("Origin", "Dest", "UniqueCarrier") \
