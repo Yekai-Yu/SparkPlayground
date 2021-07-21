@@ -134,7 +134,7 @@ q2dot2df_BOS = df.select("Origin", "Dest", "DepDelay") \
                 .agg({"DepDelay": "avg"}) \
                 .orderBy(col("AVG(DepDelay)").asc()) \
                 .limit(10)
-
+'''
 # =============== Q2.3 ===============
 q2dot3df_1 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .where((col("Origin") == "LGA") & (col("Dest") == "BOS")) \
@@ -163,10 +163,11 @@ q2dot3df_4 = df.select("Origin", "Dest", "UniqueCarrier", "ArrDelay") \
                 .agg({"ArrDelay": "avg"}) \
                 .orderBy(col("AVG(ArrDelay)").asc()) \
                 .limit(10)
-'''
+
+
 def get_dynamodb():
   return boto3.resource('dynamodb', region_name = "us-east-1")
-
+'''
 def write_to_table(df, table_name):
     for entry in df.rdd.collect():
         print(entry)
@@ -391,7 +392,7 @@ class Q2_3_SendToDynamoDB_ForeachWriter:
     if err:
       raise err
 
-'''
+
 
 # def execute(df_, t):
 #     q = (
@@ -403,24 +404,25 @@ class Q2_3_SendToDynamoDB_ForeachWriter:
 #     )
 #     stop_stream_query(q, t)
 
-# def execute_q2(df_, t, writer):
-#     q = (
-#         df_.writeStream\
-#             .foreach(writer) \
-#             .outputMode("complete") \
-#             .start()
-#     )
-#     stop_stream_query(q, t)
-#     print("--- Done ---")
-
-def execute_q3(df_, t):
+def execute_q2(df_, t, writer):
     q = (
         df_.writeStream\
-            .outputMode("append") \
-            .foreachBatch(foreach_batch_function) \
+            .foreach(writer) \
+            .outputMode("complete") \
             .start()
     )
     stop_stream_query(q, t)
+    print("--- Done ---")
+
+
+# def execute_q3(df_, t):
+#     q = (
+#         df_.writeStream\
+#             .outputMode("append") \
+#             .foreachBatch(foreach_batch_function) \
+#             .start()
+#     )
+#     stop_stream_query(q, t)
 
 # =============== Execution ===============
 interval = 5
@@ -440,12 +442,12 @@ interval = 5
 # execute_q2(q2dot2df_SEA, interval, Q2_2_SendToDynamoDB_ForeachWriter())
 # execute_q2(q2dot2df_BOS, interval, Q2_2_SendToDynamoDB_ForeachWriter())
 
-# execute_q2(q2dot3df_1, interval, Q2_3_SendToDynamoDB_ForeachWriter())
-# execute_q2(q2dot3df_2, interval, Q2_3_SendToDynamoDB_ForeachWriter())
-# execute_q2(q2dot3df_3, interval, Q2_3_SendToDynamoDB_ForeachWriter())
-# execute_q2(q2dot3df_4, interval, Q2_3_SendToDynamoDB_ForeachWriter())
+execute_q2(q2dot3df_1, interval, Q2_3_SendToDynamoDB_ForeachWriter())
+execute_q2(q2dot3df_2, interval, Q2_3_SendToDynamoDB_ForeachWriter())
+execute_q2(q2dot3df_3, interval, Q2_3_SendToDynamoDB_ForeachWriter())
+execute_q2(q2dot3df_4, interval, Q2_3_SendToDynamoDB_ForeachWriter())
 
-execute_q3(df, interval)
+# execute_q3(df, interval)
 # execute_q3(q3dot2_df2, interval)
 # execute_q3(q3dot2_df3, interval)
 # execute_q3(q3dot2_df4, interval)
