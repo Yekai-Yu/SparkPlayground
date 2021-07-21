@@ -44,7 +44,7 @@ df = spark \
   .readStream \
   .format("kafka") \
   .option("kafka.bootstrap.servers", "b-1.mp2.zetw14.c11.kafka.us-east-1.amazonaws.com:9092,b-2.mp2.zetw14.c11.kafka.us-east-1.amazonaws.com:9092") \
-  .option("subscribe", "SmallTopic") \
+  .option("subscribe", "AWSKafkaTutorialTopic") \
   .option("startingOffsets", "earliest") \
   .load()
 
