@@ -208,7 +208,7 @@ def foreach_batch_function(df, epoch_id):
     #             (col("XY.FlightDateUniform") == col("XYGroupBy.FlightDateUniform")), 
     #             (col("XY.ArrDelay") == col("XYGroupBy.min(ArrDelay)"))]
     X_Y_cond = ["Origin", "Dest", "FlightDateUniform", "ArrDelay"]
-    df_X_Y = df_X_Y.join(df_X_Y_groupby, X_Y_cond, "inner")
+    df_X_Y = df_X_Y.join(df_X_Y_groupby, X_Y_cond, "inner").withColumnRenamed("ArrDelay", "XY-ArrDelay")
     # df_X_Y = df_X_Y.drop("min(ArrDelay)")
     df_X_Y = df_X_Y.alias("XY")
     df_X_Y.show()
@@ -229,7 +229,7 @@ def foreach_batch_function(df, epoch_id):
     #             (col("YZ.FlightDateUniform") == col("YZGroupBy.FlightDateUniform")), 
     #             (col("YZ.ArrDelay") == col("YZGroupBy.min(ArrDelay)"))]
     Y_Z_cond = ["Origin", "Dest", "FlightDateUniform", "ArrDelay"]
-    df_Y_Z = df_Y_Z.join(df_Y_Z_groupby, Y_Z_cond, "inner")
+    df_Y_Z = df_Y_Z.join(df_Y_Z_groupby, Y_Z_cond, "inner").withColumnRenamed("ArrDelay", "YZ-ArrDelay")
     # df_Y_Z = df_Y_Z.drop("min(ArrDelay)")
     df_Y_Z = df_Y_Z.alias("YZ")
     df_Y_Z.show()
@@ -249,7 +249,7 @@ def foreach_batch_function(df, epoch_id):
                                             .alias("Airline/Flight Number 1"), 
                                     date_format(col("XY.XY-CRSDepTimeUniform"), "HH:mm dd/MM/yyyy")
                                                 .alias("Sched Depart 1"), 
-                                    col("XY.ArrDelay").alias("Arrival Delay 1"), 
+                                    col("XY.XY-ArrDelay").alias("Arrival Delay 1"), 
                                     col("YZ.Origin").alias("Origin 2"), 
                                     col("YZ.Dest").alias("Destination 2"), 
                                     concat(col("YZ.UniqueCarrier"), 
@@ -258,7 +258,7 @@ def foreach_batch_function(df, epoch_id):
                                             .alias("Airline/Flight Number 2"), 
                                     date_format(col("YZ.YZ-CRSDepTimeUniform"), "HH:mm dd/MM/yyyy")
                                                 .alias("Sched Depart 2"), 
-                                    col("YZ.ArrDelay").alias("Arrival Delay 2")) \
+                                    col("YZ.YZ-ArrDelay").alias("Arrival Delay 2")) \
                                 .withColumn("finalKey", concat(col("Origin 1"), lit("-"), col("Destination 1"), lit("-"), col("Destination 2"), lit("-"), date_format(col("Sched Depart 1"), "dd-MM-yyyy")))
     
 
